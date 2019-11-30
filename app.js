@@ -1,24 +1,33 @@
 //Requires
 var express = require('express');
 var mongoose = require('mongoose');
+var bodyParser = require('body-parser');
 
 //Initialize variables
 var app = express();
 
-//db connection
-mongoose.connection.openUri('mongodb://localhost:27017/adminPro', (err, res) => {
-    if (err) throw err;
-    console.log('BD online');
+//body parser
 
-});
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
+
+
+//import routes
+var appRoutes = require('./routes/app');
+var userRoutes = require('./routes/user');
+
+//db connection
+mongoose.connect //.connection.openUri
+    ('mongodb://localhost:27017/AdminPro', (err, res) => {
+        if (err) throw err;
+        console.log('BD online');
+
+    });
 
 //Routes
-app.get('/', (req, res, next) => {
-    res.status(200).json({
-        ok: true,
-        message: 'successful'
-    });
-});
+app.use('/user', userRoutes);
+app.use('/', appRoutes);
 
 //listen
 app.listen(3000, () => {
